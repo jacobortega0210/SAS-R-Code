@@ -1,0 +1,66 @@
+---
+title: "Data Visualization"
+author: "Jake Ortega"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(date)
+library(TSstudio)
+library(tidyr)
+library(tidyverse)
+
+UBDN <- read.csv("Y:\\Division Shared Files\\EEP IBIS\\ubdn_2000_2020.csv") 
+
+UBDN$birthdefect.factor <- as.factor(UBDN$birthdefect)
+
+
+UBDN$maternalrace[UBDN$maternalrace == 'W'] <- 'White'
+UBDN$maternalrace[UBDN$maternalrace == 'B'] <- 'Black/African American'
+UBDN$maternalrace[UBDN$maternalrace == 'O'] <- 'Other'
+UBDN$maternalrace[UBDN$maternalrace == 'U'] <- 'Unknown'
+UBDN$maternalrace[UBDN$maternalrace == 'NS'] <- 'Not Submitted'
+
+options(repr.plot.width = 15, repr.plot.height = 15)
+
+```
+
+## Data Visualization
+
+
+```{r cars, echo=TRUE}
+
+
+bar<-ggplot(UBDN, aes(year, fill=birthdefect.factor)) + geom_bar() + scale_x_continuous(breaks = seq(2015, 2022,1), limits = c(2015, 2022)) +
+  facet_wrap(~infantgender) + theme(panel.spacing = unit(2, 'cm'), axis.text.x = element_text(angle = 45)) +
+  labs(title = 'Infant Gender')
+ggplotly(bar)
+
+bar.prop<-ggplot(UBDN, aes(year, fill=birthdefect.factor)) + geom_bar(position = 'fill') + scale_x_continuous(breaks = seq(2015, 2022,1), limits = c(2015, 2022)) +
+  facet_wrap(~infantgender) + theme(panel.spacing = unit(2, 'cm'), axis.text.x = element_text(angle = 45)) +
+  labs(title = 'Proportion')
+ggplotly(bar.prop)
+
+
+bar1<-ggplot(UBDN, aes(year)) + geom_bar(color="black",fill="dodgerblue") + scale_x_continuous(breaks = seq(2015, 2022,1), limits = c(2015, 2022)) +
+  facet_wrap(~birthdefect) + theme(panel.spacing = unit(2, 'cm'), axis.text.x = element_text(angle = 45)) + labs(title = 'Birth Defect')
+ggplotly(bar1)
+
+bar2<-ggplot(UBDN, aes(year)) + geom_bar(color = 'black', fill = 'dodgerblue') + scale_x_continuous(breaks = seq(2015, 2022,1), limits = c(2015, 2022)) +
+  facet_wrap(~maternalrace, scales = 'free') + theme(panel.spacing = unit(2, 'cm'), axis.text.x = element_text(angle = 45)) + labs(title = 'Maternal Race')
+ggplotly(bar2) 
+
+bar.county<-ggplot(UBDN, aes(year)) + geom_bar(color = 'black', fill = 'dodgerblue') + scale_x_continuous(breaks = seq(2015, 2022,1), limits = c(2015, 2022)) +
+  facet_wrap(~dist, scales = 'free') + theme(panel.spacing = unit(2, 'cm'), axis.text.x = element_text(angle = 45, hjust = 5)) + 
+  labs(title = 'LHD')
+ggplotly(bar.county)
+```
+
